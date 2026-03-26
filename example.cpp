@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "Matrix.hpp"
+#include "hyMatrix.hpp"
 
 int main() {
 
