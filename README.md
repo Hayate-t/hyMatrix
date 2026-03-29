@@ -213,10 +213,13 @@ std::cout << linalg::Matrix::rank(A);  //出力: 2
 
 example.cppには動作確認用プログラムが入っています。ライブラリ自体はヘッダファイルのみなので、追加の設定は不要です。
 
----------------
-© 2026 Hayate-t. All rights reserved.
 
 ```bash
 g++ example.cpp -o example.out
 ./example.out
 ```
+
+---------------
+© 2026 Hayate-t. All rights reserved.
+
+
