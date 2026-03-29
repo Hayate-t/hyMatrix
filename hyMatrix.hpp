@@ -1,7 +1,7 @@
 #include <vector>
 #include <cmath>
-#include <stdexcept>
 #include <utility>
+#include <stdexcept>
 
 
 namespace linalg {
@@ -20,11 +20,17 @@ namespace linalg {
 
         //値の代入
         double& operator()(size_t i, size_t j) {
+            if (i >= rows || j >= cols) {
+                throw std::out_of_range("Index out of range");
+            }
             return data_[i * cols + j];
         }
 
         //値の参照
         double operator()(size_t i, size_t j) const {
+            if (i >= rows || j >= cols) {
+                throw std::out_of_range("Index out of range");
+            }
             return data_[i * cols + j];
         }
 
@@ -252,7 +258,7 @@ namespace linalg {
 
             Matrix X = solve(A, b);
 
-            std::vector<double> x(X.rows, 0.0);
+            std::vector<double> x(X.rows);
             for (size_t i = 0; i < X.rows; i++) {
                 x[i] = X(i, 0);
             }
