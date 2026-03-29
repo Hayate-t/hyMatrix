@@ -13,7 +13,7 @@ void print(const linalg::Matrix& M) {
     }
     std::cout << "]\n";
 }
-
+ 
 int main() {
 
     std::cout << "=== Basic Matrix Operations ===\n";
