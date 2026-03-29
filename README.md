@@ -1,8 +1,14 @@
 # hyMatrix
 
-Eigen等の高度なライブラリを用いずに単純な行列計算を行うためのC++ヘッダファイルです。
+シンプルな行列計算を目的とした、C++ライブラリです。
+Eigen等の高度なライブラリを用いずに基本的な線形代数処理を行います。
 
-2026/3/29時点でのバージョンは「0.1.0」です。今後、ベクトルや回転行列などの機能を追加予定です。
+## Version
+
+- 0.1.0 (Latest) 2026/3/29
+
+現段階では開発中となっています。
+今後、ベクトルや回転行列などの機能を追加予定です。
 
 ## 機能
 
@@ -20,7 +26,7 @@ Eigen等の高度なライブラリを用いずに単純な行列計算を行う
 
 1. hyMatrix.hppを任意のファイルに置く
 2. includeする
-   `#include "hyMatrix.hpp` （同一ディレクトリの場合）
+   `#include "hyMatrix.hpp"` （同一ディレクトリの場合）
 
 ## 使用方法
 
@@ -84,7 +90,7 @@ linalg::Matrix B(2, 2);
 **/
 
 linalg::Matrix C = A + B;
-linalg::Matrix D = A - D;
+linalg::Matrix D = A - B;
 ```
 
 加算・減算は行列の型が一致していない場合、エラーになります。
@@ -218,6 +224,10 @@ example.cppには動作確認用プログラムが入っています。ライブ
 g++ example.cpp -o example.out
 ./example.out
 ```
+
+## License
+
+MIT License
 
 ---------------
 © 2026 Hayate-t. All rights reserved.
