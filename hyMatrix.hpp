@@ -258,6 +258,68 @@ namespace linalg {
             }
             return x;
         }
+
+        //逆行列
+        static Matrix inverse(const Matrix& A) {
+            //正方行列でないとエラー
+            if (!A.isSquared()) {
+                throw std::runtime_error("Matrix is not square");
+            }
+
+            //// Gauss-Jordan法による逆行列の生成 ////
+
+            size_t n = A.rows;
+
+            //対象となる行列に単位行列を追加した拡大行列を生成
+            Matrix Aug(n, n * 2);
+            for(size_t i = 0; i < n; i++) {
+                for (size_t j = 0; j < n; j++) {
+                    Aug(i, j) = A(i, j);
+                }
+                for (size_t j = 0; j < n; j++) {
+                    Aug(i, n + j) = (i == j) ? 1.0 : 0.0;
+                }
+            }
+
+            //前進消去
+            Aug = forward_elimination(Aug);
+
+            //後方から単位行列にする処理
+            //後退処理はオーバーフロー防止のためsize_tではなくint32_tを用いる
+            for (int32_t i = n - 1; i >= 0; i--) {
+                double pivot = Aug(i, i);
+
+                //ピボットが既に0であるとき、正則でないためエラー
+                if (std::abs(pivot) < 1e-10) {
+                    throw std::runtime_error("Matrix is singular");
+                }
+
+                //ピボットを1にするため、行全体をピボットで割る
+                for (size_t j = 0; j < 2 * n; j++) {
+                    Aug(i, j) /= pivot;
+                }
+
+                //ピボット列の上側を0にする
+                for (int32_t k = i - 1; k >= 0; k--) {
+                    //ピボットは既に1であるため、係数は成分そのものになる
+                    double factor = Aug(k, i);
+                    //行全体を引いていく
+                    for (size_t j = 0; j < 2 * n; j++) {
+                        Aug(k, j) -= factor * Aug(i, j);
+                    }
+                }
+            }
+
+            //拡大行列の右半分から、生成した逆行列を取り出す
+            Matrix inv(n, n);
+            for (size_t i = 0; i < n; i++) {
+                for (size_t j = 0; j < n; j++) {
+                    inv(i, j) = Aug(i, n + j);
+                }
+            }
+
+            return inv;
+        }
     };
 
     //スカラーと行列の積
