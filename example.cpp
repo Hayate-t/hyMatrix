@@ -2,38 +2,42 @@
 #include <vector>
 #include "hyMatrix.hpp"
 
+void print(const linalg::Matrix& M) {
+    std::cout << "[\n";
+    for (size_t i = 0; i < M.rows; i++) {
+        for (size_t j = 0; j < M.cols; j++) {
+            std::cout << M(i, j) << "\t";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "]\n";
+}
+
 int main() {
 
-    // データ点
-    std::vector<double> x = {1, 2, 3, 4};
-    std::vector<double> y = {2.0, 2.9, 4.1, 5.05};
+    // 逆行列が存在する行列
+    linalg::Matrix A(3, 3);
 
-    size_t n = x.size();
+    A(0, 0) = 2;  A(0, 1) = -1; A(0, 2) = 0;
+    A(1, 0) = -1; A(1, 1) = 2;  A(1, 2) = -1;
+    A(2, 0) = 0;  A(2, 1) = -1; A(2, 2) = 2;
 
-    // A行列（n×2）
-    linalg::Matrix A(n, 2);
-    for (size_t i = 0; i < n; i++) {
-        A(i, 0) = x[i];
-        A(i, 1) = 1.0;
-    }
+    std::cout << "Matrix A:\n";
+    print(A);
 
-    // bベクトル（n×1）
-    linalg::Matrix b(n, 1);
-    for (size_t i = 0; i < n; i++) {
-        b(i, 0) = y[i];
-    }
+    // 逆行列を計算
+    linalg::Matrix A_inv = linalg::Matrix::inverse(A);
 
-    // 最小二乗法：x = (A^T A)^-1 A^T b
-    linalg::Matrix At = A.transpose();
-    linalg::Matrix AtA = At * A;
-    linalg::Matrix Atb = At * b;
+    std::cout << "\nInverse of A:\n";
+    print(A_inv);
 
-    linalg::Matrix result = linalg::Matrix::solve(AtA, Atb);
+    // 検算① A * A^-1
+    std::cout << "\nA * A_inv:\n";
+    print(A * A_inv);
 
-    double a = result(0, 0);
-    double b0 = result(1, 0);
-
-    std::cout << "y = " << a << "x + " << b0 << std::endl;
+    // 検算② A^-1 * A
+    std::cout << "\nA_inv * A:\n";
+    print(A_inv * A);
 
     return 0;
 }
