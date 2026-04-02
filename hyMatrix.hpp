@@ -1,4 +1,7 @@
+#pragma once
+
 #include <vector>
+#include <array>
 #include <cmath>
 #include <utility>
 #include <stdexcept>
@@ -326,7 +329,7 @@ namespace linalg {
 
             return inv;
         }
-    };
+    }; //class Matrix
 
     //スカラーと行列の積
     Matrix operator*(double k, const Matrix& M) {
@@ -344,4 +347,90 @@ namespace linalg {
     Matrix operator*(const Matrix& M, double k) {
         return k * M;
     }
-}
+
+    template<size_t N> 
+    class Vector{
+        private:
+
+        std::array<double, N> data_;
+
+        public:
+
+        Vector() {
+            data_.fill(0.0);
+        }
+
+        Vector(std::initializer_list<double> init) {
+            if (init.size() != N) {
+                throw std::runtime_error("Size mismatch");
+            }
+            std::copy(init.begin(), init.end(), data_.begin());
+        }
+
+        double& operator[](size_t i) {
+            return data_[i];
+        }
+
+        double operator[](size_t i) const {
+            return data_[i];
+        }
+
+        Vector operator+(const Vector& w) const {
+            Vector x;
+            for (size_t i = 0; i < N; i++) {
+                x[i] = data_[i] + w[i];
+            }
+            return x;
+        }
+
+        Vector operator-(const Vector& w) const {
+            Vector x;
+            for (size_t i = 0; i < N; i++) {
+                x[i] = data_[i] - w[i];
+            }
+            return x;
+        }
+        
+        Vector operator*(double k) const {
+            Vector x;
+            for (size_t i = 0; i < N; i++) {
+                x[i] = data_[i] * k;
+            }
+            return x;
+        }
+
+        double innerProduct(const Vector& w) const {
+            double sum = 0.0;
+            for (size_t i = 0; i < N; i++) {
+                sum += data_[i] * w[i];
+            }
+            return sum;
+        }
+
+        double norm() const {
+            //自分自身との内積をとることで、各成分の2乗の和が計算される。これはノルムの2乗に等しい。
+            return std::sqrt(innerProduct(*this));
+        }
+
+    }; //class Vector
+
+    template<size_t N>
+    Vector<N> operator*(double k, const Vector<N>& v) {
+        return v * k;
+    }
+
+    using Vector2 = Vector<2>;
+    using Vector3 = Vector<3>;
+    
+    double cross(const Vector2& v, const Vector2& w) {
+        return v[0] * w[1] - v[1] * w[0];
+    }
+
+    Vector3 cross(const Vector3& v, const Vector3& w) {
+        return Vector3{
+            v[1] * w[2] - v[2] * w[1],
+            v[2] * w[0] - v[0] * w[2],
+            v[0] * w[1] - v[1] * w[0]
+        };
+    }
+} //namespace linalg
