@@ -13,6 +13,14 @@ void print(const linalg::Matrix& M) {
     }
     std::cout << "]\n";
 }
+
+void printVector(const linalg::Vector2& v) {
+    std::cout << "[" << v[0] << ", " << v[1] << "]" << std::endl;
+}
+
+void printVector(const linalg::Vector3& v) {
+    std::cout << "[" << v[0] << ", " << v[1] << ", " << v[2] << "]" << std::endl;
+}
  
 int main() {
 
@@ -104,6 +112,74 @@ int main() {
     for (double val : sol) {
         std::cout << val << "\n";
     }
+
+    std::cout << "===== Vector Test =====" << std::endl;
+
+    // ===== Vector2 =====
+    linalg::Vector2 v2a{1.0, 2.0};
+    linalg::Vector2 v2b{3.0, 4.0};
+
+    std::cout << "\n-- Vector2 basic --" << std::endl;
+    printVector(v2a);
+    printVector(v2b);
+
+    // 加算
+    std::cout << "\n-- addition --" << std::endl;
+    auto v2_add = v2a + v2b;
+    printVector(v2_add);
+
+    // 減算
+    std::cout << "\n-- subtraction --" << std::endl;
+    auto v2_sub = v2a - v2b;
+    printVector(v2_sub);
+
+    // スカラー倍
+    std::cout << "\n-- scalar multiply ([1,2]x2, 2x[1,2]) --" << std::endl;
+    auto v2_scale = v2a * 2.0;
+    printVector(v2_scale);
+
+    auto v2_scale2 = 2.0 * v2a;
+    printVector(v2_scale2);
+
+    // 内積
+    std::cout << "\n-- dot product --" << std::endl;
+    std::cout << v2a.dot(v2b) << std::endl;
+
+    // ノルム
+    std::cout << "\n-- norm --" << std::endl;
+    std::cout << v2a.norm() << std::endl;
+
+    // 外積（2D）
+    std::cout << "\n-- cross (2D) --" << std::endl;
+    std::cout << linalg::Vector2::cross(v2a, v2b) << std::endl;
+
+    // ===== Vector3 =====
+    linalg::Vector3 v3a{1.0, 0.0, 0.0};
+    linalg::Vector3 v3b{0.0, 1.0, 0.0};
+
+    std::cout << "\n-- Vector3 basic --" << std::endl;
+    printVector(v3a);
+    printVector(v3b);
+
+    // 加算
+    std::cout << "\n-- addition --" << std::endl;
+    auto v3_add = v3a + v3b;
+    printVector(v3_add);
+
+    // 内積
+    std::cout << "\n-- dot product --" << std::endl;
+    std::cout << v3a.dot(v3b) << std::endl;
+
+    // ノルム
+    std::cout << "\n-- norm --" << std::endl;
+    std::cout << v3a.norm() << std::endl;
+
+    // 外積（3D）
+    std::cout << "\n-- cross (3D) --" << std::endl;
+    auto v3_cross = linalg::Vector3::cross(v3a, v3b);
+    printVector(v3_cross);
+
+    std::cout << "\n===== Test End =====" << std::endl;
 
     return 0;
 }

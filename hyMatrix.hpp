@@ -399,7 +399,7 @@ namespace linalg {
             return x;
         }
 
-        double innerProduct(const Vector& w) const {
+        double dot(const Vector& w) const {
             double sum = 0.0;
             for (size_t i = 0; i < N; i++) {
                 sum += data_[i] * w[i];
@@ -409,9 +409,22 @@ namespace linalg {
 
         double norm() const {
             //自分自身との内積をとることで、各成分の2乗の和が計算される。これはノルムの2乗に等しい。
-            return std::sqrt(innerProduct(*this));
+            return std::sqrt(dot(*this));
         }
 
+        static auto cross(const Vector& v, const Vector& w) {
+            if constexpr (N == 3) {
+                return Vector{
+                    v[1] * w[2] - v[2] * w[1],
+                    v[2] * w[0] - v[0] * w[2],
+                    v[0] * w[1] - v[1] * w[0]
+                };
+            } else if constexpr (N == 2) {
+                return v[0] * w[1] - v[1] * w[0];
+            } else {
+                static_assert(N == 2 || N == 3, "Cross only for 2D or 3D");
+            }
+        }
     }; //class Vector
 
     template<size_t N>
@@ -422,15 +435,5 @@ namespace linalg {
     using Vector2 = Vector<2>;
     using Vector3 = Vector<3>;
     
-    double cross(const Vector2& v, const Vector2& w) {
-        return v[0] * w[1] - v[1] * w[0];
-    }
 
-    Vector3 cross(const Vector3& v, const Vector3& w) {
-        return Vector3{
-            v[1] * w[2] - v[2] * w[1],
-            v[2] * w[0] - v[0] * w[2],
-            v[0] * w[1] - v[1] * w[0]
-        };
-    }
 } //namespace linalg
