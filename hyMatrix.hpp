@@ -8,6 +8,8 @@
 
 
 namespace linalg {
+
+    //行列
     class Matrix {
         private:
 
@@ -348,18 +350,23 @@ namespace linalg {
         return k * M;
     }
 
+    //ベクトル
+    //ベクトルの成分数は、固定サイズテンプレートで指定する。
     template<size_t N> 
     class Vector{
         private:
 
+        //std::vectorではなくstd::arrayを用いている。（resize()等を行わないため）
         std::array<double, N> data_;
 
         public:
 
+        //通常コンストラクタ
         Vector() {
             data_.fill(0.0);
         }
 
+        //リストで定義する場合のコンストラクタ
         Vector(std::initializer_list<double> init) {
             if (init.size() != N) {
                 throw std::runtime_error("Size mismatch");
@@ -367,14 +374,17 @@ namespace linalg {
             std::copy(init.begin(), init.end(), data_.begin());
         }
 
+        //値の代入
         double& operator[](size_t i) {
             return data_[i];
         }
 
+        //値の参照
         double operator[](size_t i) const {
             return data_[i];
         }
 
+        //加算
         Vector operator+(const Vector& w) const {
             Vector x;
             for (size_t i = 0; i < N; i++) {
@@ -383,6 +393,7 @@ namespace linalg {
             return x;
         }
 
+        //減算
         Vector operator-(const Vector& w) const {
             Vector x;
             for (size_t i = 0; i < N; i++) {
@@ -391,6 +402,7 @@ namespace linalg {
             return x;
         }
         
+        //スカラー積（左がベクトルの場合）
         Vector operator*(double k) const {
             Vector x;
             for (size_t i = 0; i < N; i++) {
@@ -399,6 +411,7 @@ namespace linalg {
             return x;
         }
 
+        //内積
         double dot(const Vector& w) const {
             double sum = 0.0;
             for (size_t i = 0; i < N; i++) {
@@ -407,19 +420,34 @@ namespace linalg {
             return sum;
         }
 
+        //ノルム（長さ）
         double norm() const {
             //自分自身との内積をとることで、各成分の2乗の和が計算される。これはノルムの2乗に等しい。
             return std::sqrt(dot(*this));
         }
 
+        //正規化（単位ベクトル化）
+        Vector normalized() const {
+            double n = norm();
+
+            if (n < 1e-10) {
+                throw std::runtime_error("Can't normalize zero vector");
+            }
+
+            return (*this) * (1.0 / n);
+        }
+
+        //外積
         static auto cross(const Vector& v, const Vector& w) {
             if constexpr (N == 3) {
+                //3次元ベクトルの際の外積
                 return Vector{
                     v[1] * w[2] - v[2] * w[1],
                     v[2] * w[0] - v[0] * w[2],
                     v[0] * w[1] - v[1] * w[0]
                 };
             } else if constexpr (N == 2) {
+                //2次元ベクトルのときは符号付面積を返す
                 return v[0] * w[1] - v[1] * w[0];
             } else {
                 static_assert(N == 2 || N == 3, "Cross only for 2D or 3D");
@@ -427,11 +455,35 @@ namespace linalg {
         }
     }; //class Vector
 
+    //ベクトルのスカラー積（ベクトルが右の場合）
     template<size_t N>
     Vector<N> operator*(double k, const Vector<N>& v) {
         return v * k;
     }
 
+    //行列とベクトルの積
+    //行列が正方行列のとき、つまりベクトルの次数が変わらないときに限り計算可能
+    template<size_t N>
+    Vector<N> operator*(const Matrix& A, const Vector<N>& v) {
+        if (A.cols != N || A.rows != N) {
+            throw std::runtime_error("Size mismatch");
+        }
+
+        Vector<N> x;
+
+        for (size_t i = 0; i < A.rows; i++) {
+            //内積をとる
+            double sum = 0.0;
+            for (size_t j = 0; j < A.cols; j++) {
+                sum += A(i, j) * v[j];
+            }
+            x[i] = sum;
+        }
+
+        return x;
+    }
+
+    //Vector2,Vector3を特殊なクラスとして別で定義する（利便性向上）
     using Vector2 = Vector<2>;
     using Vector3 = Vector<3>;
     

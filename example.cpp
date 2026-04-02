@@ -154,8 +154,8 @@ int main() {
     std::cout << linalg::Vector2::cross(v2a, v2b) << std::endl;
 
     // ===== Vector3 =====
-    linalg::Vector3 v3a{1.0, 0.0, 0.0};
-    linalg::Vector3 v3b{0.0, 1.0, 0.0};
+    linalg::Vector3 v3a{3.0, 4.0, 0.0};
+    linalg::Vector3 v3b{0.0, 1.0, 2.0};
 
     std::cout << "\n-- Vector3 basic --" << std::endl;
     printVector(v3a);
@@ -178,6 +178,18 @@ int main() {
     std::cout << "\n-- cross (3D) --" << std::endl;
     auto v3_cross = linalg::Vector3::cross(v3a, v3b);
     printVector(v3_cross);
+
+    // 正規化
+    std::cout << "\n-- normalize --" << std::endl;
+    auto v_norm = v3a.normalized();
+    printVector(v_norm);
+
+    //行列とベクトルの積
+    std::cout << "\n-- product of Matrix and Vector --" << std::endl;
+    auto result = C * v3a;
+    print(C);
+    printVector(v3a);
+    printVector(result);
 
     std::cout << "\n===== Test End =====" << std::endl;
 
